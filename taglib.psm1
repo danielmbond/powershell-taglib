@@ -1,4 +1,15 @@
 
+filter get-artist([string]$artist) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    if ($tag.Tag.AlbumArtists) {
+        return $tag.Tag.AlbumArtists
+    } elseif ($tag.Tag.Performers) {
+        return $tag.Tag.Performers
+    } else {
+        return ""
+    }
+}
+
 filter set-artist([string]$artist) {
     $tag = [TagLib.File]::Create($_.fullname)
     $tag.Tag.AlbumArtists = $artist
