@@ -17,11 +17,20 @@ filter set-artist([string]$artist) {
     $tag.Save()
 }
 
-filter set-title([string]$title) {
+filter get-title([string]$artist) {
     $tag = [TagLib.File]::Create($_.fullname)
     $tag.Tag.Title =  $(if ($title) { $title } else { $_.baseName })
-    $tag.Save()
 }
+
+filter set-title([string]$title) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $(if ($title) { $title } else { $_.baseName })
+}
+
+filter get-album([string]$album) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Tag.Album
+}    
 
 filter set-album([string]$album) {
     $tag = [TagLib.File]::Create($_.fullname)
@@ -29,11 +38,21 @@ filter set-album([string]$album) {
     $tag.Save()
 }    
 
+filter get-track([int]$track) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Tag.Track
+}
+
 filter set-track([int]$track, [int]$trackCount = 0) {
     $tag = [TagLib.File]::Create($_.fullname)
     $tag.Tag.Track = $track
     $tag.Tag.TrackCount = $trackCount
     $tag.Save()
+}    
+
+filter get-disc([int]$disc, [int]$discCount = 0) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Tag.Track
 }    
 
 filter set-disc([int]$disc, [int]$discCount = 0) {
