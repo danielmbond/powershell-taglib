@@ -1,4 +1,3 @@
-
 filter get-artist([string]$artist) {
     $tag = [TagLib.File]::Create($_.fullname)
     if ($tag.Tag.AlbumArtists) {
@@ -7,6 +6,55 @@ filter get-artist([string]$artist) {
         return $tag.Tag.Performers
     } else {
         return ""
+    }
+}
+
+function save-picture([Object]$file, [string]$outfile="cover.jpg") {
+    write-host "$($file.fullname) $outfile"
+    $tag = [TagLib.File]::Create($file.fullname)
+
+    if ($tag.Tag.Pictures) {
+        $fileName = $tag.Tag.Pictures.Filename
+        $mimetype = $tag.Tag.Pictures.MimeType
+        switch ($mimetype)
+        {
+            "image/bmp"  {$extension = "bmp"}
+            "image/jpeg" {$extension = "jpg"}
+            "image/png"  {$extension = "png"}
+            Default      {$extension = $false}
+        }
+        if ($extension -and $extension -ne "jpg") {
+            $outfile = $outfile.Replace(".jpg",".$extension")
+        }
+        $tag.Tag.Pictures.data | Set-Content -Path $outfile -Encoding Byte
+        return $outfile
+    } else {
+        return ""
+    }
+}
+
+function GetPictureFromBitmap([System.Drawing.Bitmap]$bitmap)
+{
+    $converter = New-Object -TypeName System.Drawing.ImageConverter
+    $byte_vec = New-Object -TypeName TagLib.ByteVector -ArgumentList $converter.ConvertTo($bitmap, [byte[]])
+    $picture = New-Object -TypeName TagLib.Picture -ArgumentList $byte_vec
+    $picture_list = New-Object TagLib.IPicture[] 1
+    $picture_list[0] = $picture
+    return $picture_list
+}
+
+filter set-picture([Object]$file,[string]$picpath) {
+    $tag = [TagLib.File]::Create($file.fullname)
+    try {
+        # Load picture into System.Drawing.Image
+        [System.Drawing.Bitmap]$pic = [System.Drawing.Image]::FromFile($picpath)
+        # Add picture to MP3
+        $tag.Tag.Pictures = GetPictureFromBitmap($pic)
+        # Save Mp3 
+        $tag.Save() 
+        return $true
+    } catch {
+        return $false
     }
 }
 
