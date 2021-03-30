@@ -10,7 +10,7 @@ A PowerShell module for manipulating metadata in media files with [TagLibSharp](
 1. Clone this repo to your PSModulePath (typically `$Env:UserProfile\Documents\WindowsPowerShell\Modules`)
 
     ```ps1
-        C:\cd cd $Env:PSModulePath.split(';')[0]
+        cd $Env:PSModulePath.split(';')[0]
         C:\Users\Daniel\Documents\WindowsPowerShell\Modules>git clone https://github.com/danielmbond/powershell-taglib.git taglib
     ```
 1. Import-Module taglib
