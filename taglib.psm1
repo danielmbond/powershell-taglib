@@ -9,10 +9,8 @@ filter get-artist([string]$artist) {
     }
 }
 
-function save-picture([Object]$file, [string]$outfile="cover.jpg") {
-    write-host "$($file.fullname) $outfile"
-    $tag = [TagLib.File]::Create($file.fullname)
-
+filter save-picture([string]$outfile) {
+    $tag = [TagLib.File]::Create($_.fullname)
     if ($tag.Tag.Pictures) {
         $fileName = $tag.Tag.Pictures.Filename
         $mimetype = $tag.Tag.Pictures.MimeType
@@ -43,8 +41,8 @@ function GetPictureFromBitmap([System.Drawing.Bitmap]$bitmap)
     return $picture_list
 }
 
-filter set-picture([Object]$file,[string]$picpath) {
-    $tag = [TagLib.File]::Create($file.fullname)
+filter set-picture([string]$picpath) {
+    $tag = [TagLib.File]::Create($_.fullname)
     try {
         # Load picture into System.Drawing.Image
         [System.Drawing.Bitmap]$pic = [System.Drawing.Image]::FromFile($picpath)
@@ -72,7 +70,8 @@ filter get-title([string]$artist) {
 
 filter set-title([string]$title) {
     $tag = [TagLib.File]::Create($_.fullname)
-    return $(if ($title) { $title } else { $_.baseName })
+    $tag.Tag.Title = $title
+    $tag.Save()
 }
 
 filter get-album([string]$album) {
