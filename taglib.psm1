@@ -25,9 +25,10 @@ filter save-picture([string]$outfile) {
             $outfile = $outfile.Replace(".jpg",".$extension")
         }
         $tag.Tag.Pictures.data | Set-Content -Path $outfile -Encoding Byte
+        $tag.Dispose()
         return $outfile
     } else {
-        return ""
+        return $false
     }
 }
 
@@ -63,9 +64,9 @@ filter set-artist([string]$artist) {
     $tag.Save()
 }
 
-filter get-title([string]$artist) {
+filter get-title([string]$title) {
     $tag = [TagLib.File]::Create($_.fullname)
-    $tag.Tag.Title =  $(if ($title) { $title } else { $_.baseName })
+    return $tag.Tag.Title
 }
 
 filter set-title([string]$title) {
