@@ -50,7 +50,8 @@ filter set-picture([string]$picpath) {
         # Add picture to MP3
         $tag.Tag.Pictures = GetPictureFromBitmap($pic)
         # Save Mp3 
-        $tag.Save() 
+        $tag.Save()
+        $pic.Dispose()
         return $true
     } catch {
         return $false
