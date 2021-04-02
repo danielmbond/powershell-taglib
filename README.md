@@ -16,11 +16,18 @@ A PowerShell module for manipulating metadata in media files with [TagLibSharp](
 1. Import-Module taglib
 
 ## <a id="functions">Functions</a>
+* get-title
 * [set-artist](#set-artist)
+* get-artist
 * [set-title](#set-title)
+* get-album
 * [set-album](#set-album)
+* get-track
 * [set-track](#set-track)
+* get-disc
 * [set-disc](#set-disc)
+* save-picture
+* set-picture
 * [update-trackAndDisc](#update-trackAndDisc)
 
 ### <a id="set-artist">set-artist</a>
