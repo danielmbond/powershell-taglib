@@ -49,7 +49,7 @@ filter set-picture([string]$picpath) {
         [System.Drawing.Bitmap]$pic = [System.Drawing.Image]::FromFile($picpath)
         # Add picture to MP3
         $tag.Tag.Pictures = GetPictureFromBitmap($pic)
-        # Save Mp3 
+        # Save Mp3
         $pic.Dispose()
         $tag.Save()
         $tag.Dispose()
@@ -83,13 +83,13 @@ filter set-title([string]$title) {
 filter get-album([string]$album) {
     $tag = [TagLib.File]::Create($_.fullname)
     return $tag.Tag.Album
-}    
+}
 
 filter set-album([string]$album) {
     $tag = [TagLib.File]::Create($_.fullname)
     $tag.Tag.Album = $album
     $tag.Save()
-}    
+}
 
 filter get-track([int]$track) {
     $tag = [TagLib.File]::Create($_.fullname)
@@ -101,19 +101,25 @@ filter set-track([int]$track, [int]$trackCount = 0) {
     $tag.Tag.Track = $track
     $tag.Tag.TrackCount = $trackCount
     $tag.Save()
-}    
+}
 
 filter get-disc([int]$disc, [int]$discCount = 0) {
     $tag = [TagLib.File]::Create($_.fullname)
     return $tag.Tag.Track
-}    
+}
+
+filter get-duration([string]$title) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Properties.Duration
+}
+
 
 filter set-disc([int]$disc, [int]$discCount = 0) {
     $tag = [TagLib.File]::Create($_.fullname)
     $tag.Tag.Track = $disc
     $tag.Tag.TrackCount = $discCount
     $tag.Save()
-}    
+}
 
 function update-trackAndDisc([string]$match = "D(?<disc>[0-9]+)T(?<track>[0-9]+)")
 {
@@ -138,7 +144,7 @@ function update-trackAndDisc([string]$match = "D(?<disc>[0-9]+)T(?<track>[0-9]+)
         foreach ($key in $discs.keys) {
             $tags = $discs[$key]
             $trackCount = $tags.length
-            
+
             foreach ($tagFile in $tags) {
                 $tagFile.Tag.TrackCount = $trackCount;
                 $tagFile.Tag.DiscCount = $discs.keys.count
