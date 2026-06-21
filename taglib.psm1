@@ -24,7 +24,7 @@ filter save-picture([string]$outfile) {
         if ($extension -and $extension -ne "jpg") {
             $outfile = $outfile.Replace(".jpg",".$extension")
         }
-        $tag.Tag.Pictures.data | Set-Content -Path $outfile -Encoding Byte
+        [System.IO.File]::WriteAllBytes($outfile, $tag.Tag.Pictures[0].Data.Data)
         $tag.Dispose()
         return $outfile
     } else {
