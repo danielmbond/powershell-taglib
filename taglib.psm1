@@ -24,6 +24,7 @@ filter save-picture([string]$outfile) {
         if ($extension -and $extension -ne "jpg") {
             $outfile = $outfile.Replace(".jpg",".$extension")
         }
+#        $tag.Tag.Pictures.data | Set-Content -Path $outfile -Encoding Byte
         [System.IO.File]::WriteAllBytes($outfile, $tag.Tag.Pictures[0].Data.Data)
         $tag.Dispose()
         return $outfile
@@ -88,6 +89,90 @@ filter get-album([string]$album) {
 filter set-album([string]$album) {
     $tag = [TagLib.File]::Create($_.fullname)
     $tag.Tag.Album = $album
+    $tag.Save()
+}
+
+filter get-isrc([string]$isrc) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Tag.ISRC
+}
+
+filter set-isrc([string]$isrc) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    $tag.Tag.ISRC = $isrc
+    $tag.Save()
+}
+
+filter get-publisher([string]$publisher) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Tag.Publisher
+}
+
+filter set-publisher([string]$publisher) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    $tag.Tag.Publisher = $publisher
+    $tag.Save()
+}
+
+filter get-genre([string]$genre) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    if ($tag.Tag.Genres) {
+        return $tag.Tag.Genres -join '; '
+    }
+    return ''
+}
+
+filter set-genre([string]$genre) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    if ($genre -is [string]) {
+        $tag.Tag.Genres = $genre -split ';' | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+    } elseif ($genre -is [string[]]) {
+        $tag.Tag.Genres = $genre
+    }
+    $tag.Save()
+}
+
+filter get-year([string]$year) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Tag.Year
+}
+
+filter set-year([string]$year) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    $tag.Tag.Year = $year
+    $tag.Save()
+}
+
+filter get-comment([string]$comment) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Tag.Comment
+}
+
+filter set-comment([string]$comment) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    $tag.Tag.Comment = $comment
+    $tag.Save()
+}
+
+filter get-subtitle([string]$subtitle) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Tag.Subtitle
+}
+
+filter set-subtitle([string]$subtitle) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    $tag.Tag.Subtitle = $subtitle
+    $tag.Save()
+}
+
+filter get-url([string]$url) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    return $tag.Tag.URL
+}
+
+filter set-url([string]$url) {
+    $tag = [TagLib.File]::Create($_.fullname)
+    $tag.Tag.URL = $url
     $tag.Save()
 }
 
